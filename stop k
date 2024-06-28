@@ -1,0 +1,6 @@
+# stop cluster
+---
+  - name: Stop kafka 
+    ansible.builtin.command:
+      cmd: /app/kafka3/kafka_2.13-3.7.0/bin/kafka-server-stop.sh
+    ignore_errors: True
