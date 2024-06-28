@@ -1,0 +1,37 @@
+# start cluster
+---
+- name: Start kafka on redhat with kraft
+  hosts: kafka
+
+  vars:
+    kafka_path: 'https://downloads.apache.org/kafka/3.7.0/{{ kafka_version }}'
+    kafka_version: '3.7.0'
+    kafka_version: 'kafka_2.13-3.7.0.tgz'
+    
+  tasks:
+    #- name: Update the Java Heap Size for Kafka
+    #  replace:
+    #    #path: "{{installation_dir}}/bin/kafka-server-start.sh"
+    #    path: "/app/kafka3/kafka_2.13-3.7.0/bin/kafka-server-start.sh"
+    #    regexp: 'export KAFKA_HEAP_OPTS=(".+")'
+    #    replace: 'export KAFKA_HEAP_OPTS="-Xmx520M -Xms520M"'
+    #    backup: yes
+
+    - name: Set kafka heap otions
+      ansible.builtin.shell:
+        cmd: 'export KAFKA_HEAP_OPTS="-Xmx200M -Xms100M"'
+
+    - name: Start kafka1 
+      ansible.builtin.command:
+        cmd: /app/kafka3/kafka_2.13-3.7.0/bin/kafka-server-start.sh -daemon /app/kafka3/kafka_2.13-3.7.0/config/kraft/server1.properties
+      when: inventory_hostname == 'kafka1'
+
+    - name: Start kafka2 
+      ansible.builtin.command:
+        cmd: /app/kafka3/kafka_2.13-3.7.0/bin/kafka-server-start.sh -daemon /app/kafka3/kafka_2.13-3.7.0/config/kraft/server2.properties
+      when: inventory_hostname == 'kafka2'
+
+    - name: Start kafka3 
+      ansible.builtin.command:
+        cmd: /app/kafka3/kafka_2.13-3.7.0/bin/kafka-server-start.sh -daemon /app/kafka3/kafka_2.13-3.7.0/config/kraft/server3.properties
+      when: inventory_hostname == 'kafka3'
