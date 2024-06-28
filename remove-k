@@ -1,0 +1,24 @@
+# stop cluster
+---
+- name: Remove kafka tmp dirs
+  hosts: kafka
+  gather_facts: false
+
+  vars:
+    kafka_path: 'https://downloads.apache.org/kafka/3.7.0/{{ kafka_tarball }}.tgz'
+    kafka_version: '3.7.0'
+    kafka_tarball: 'kafka_2.13-3.7.0'
+    
+  tasks:
+
+  - import_tasks: stop-kafka.yaml
+
+  - name: Remove kafka storage 
+    ansible.builtin.command:
+      cmd: rm -rf /tmp/kraft-combined-logs/
+
+  - name: Remove kafka binary file
+    ansible.builtin.command:
+      cmd: rm -rf /app/kafka3/{{ kafka_tarball }}
+
+  # sprawdzic i usunac zmienne srodowiskowe
